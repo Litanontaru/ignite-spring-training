@@ -1,15 +1,11 @@
 package com.epam.training;
 
 import org.apache.ignite.Ignite;
-import org.apache.ignite.IgniteCache;
-import org.apache.ignite.transactions.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ContextProviderImpl implements ContextProvider {
     private static final String CACHE_NAME = "plugins";
-    private static final String CACHE_KEY = "plugins";
 
     @Autowired
     private Ignite ignite;
@@ -28,27 +23,14 @@ public class ContextProviderImpl implements ContextProvider {
     private final Map<String, ApplicationContext> localContextCache = new ConcurrentHashMap<>();
 
     @Override
-    public void register(String path) {
-        try (Transaction tx = ignite.transactions().txStart()) {
-            IgniteCache<String, Set<String>> cache = ignite.cache(CACHE_NAME);
-            Set<String> paths = cache.get(CACHE_KEY);
-            if (paths == null) {
-                paths = new HashSet<>();
-            }
-            paths.add(path);
-            cache.put(CACHE_KEY, paths);
-            tx.commit();
-        }
+    public void register(String path, String bean) {
+        ignite.cache(CACHE_NAME).put(bean, path);
     }
 
     @Override
-    public ApplicationContext get(String path) {
-        Set<String> paths = ignite.<String, Set<String>>cache(CACHE_NAME).get(CACHE_KEY);
-        if (paths.contains(path)) {
-            return localContextCache.computeIfAbsent(path, this::create);
-        } else {
-            throw new IllegalArgumentException("Unknown path " + path);
-        }
+    public <T> T get(String bean) {
+        String path = ignite.<String, String>cache(CACHE_NAME).get(bean);
+        return (T) localContextCache.computeIfAbsent(path, this::create).getBean(bean);
     }
 
     private ApplicationContext create(String path) {

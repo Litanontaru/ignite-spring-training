@@ -1,12 +1,10 @@
 package com.epam.training;
 
-import org.springframework.context.ApplicationContext;
-
 /**
  * @author Andrei_Yakushin
  */
 public interface ContextProvider {
-    void register(String path);
+    void register(String path, String bean);
 
-    ApplicationContext get(String path);
+    <T> T get(String bean);
 }
