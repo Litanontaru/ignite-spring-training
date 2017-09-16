@@ -22,7 +22,8 @@
           p:gridName="roleModel"
           p:discoverySpi-ref="discoverySpi"
           p:cacheConfiguration-ref="cacheConfig"
-          p:serviceConfiguration-ref="services"/>
+          p:serviceConfiguration-ref="services"
+          p:PeerClassLoadingEnabled="true"/>
 
     <bean id="discoverySpi" class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
         <property name="ipFinder">
