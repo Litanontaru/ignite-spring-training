@@ -54,7 +54,7 @@
 
     <util:list id="services">
         <bean class="org.apache.ignite.services.ServiceConfiguration"
-              p:name="Lead"
+              p:name="HELLO"
               p:maxPerNodeCount="1"
               p:totalCount="1"
               p:service-ref="hello"/>
