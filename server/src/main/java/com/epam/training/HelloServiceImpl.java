@@ -16,6 +16,8 @@ public class HelloServiceImpl implements HelloService {
     @SpringApplicationContextResource
     private transient ApplicationContext applicationContext;
 
+    private transient ContextProvider contextProvider;
+
     @Override
     public void cancel(ServiceContext ctx) {
         System.out.println("HelloServiceImpl.cancel");
@@ -29,5 +31,6 @@ public class HelloServiceImpl implements HelloService {
     @Override
     public void execute(ServiceContext ctx) throws Exception {
         System.out.println("HelloServiceImpl.execute");
+        contextProvider = applicationContext.getBean(ContextProviderImpl.class);
     }
 }

@@ -2,15 +2,23 @@
 
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:c="http://www.springframework.org/schema/c"
        xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-    <bean id="ignite" class="org.apache.ignite.configuration.IgniteConfiguration" scope="prototype"
+    <context:annotation-config/>
+
+    <bean id="ignite-bean" class="org.apache.ignite.IgniteSpringBean"
+          p:configuration-ref="ignite-cfg"/>
+
+    <bean id="ignite-cfg" class="org.apache.ignite.configuration.IgniteConfiguration" scope="prototype"
           p:gridName="roleModel"
           p:discoverySpi-ref="discoverySpi"
           p:cacheConfiguration-ref="cacheConfig"
@@ -30,10 +38,15 @@
 
     <util:list id="cacheConfig">
         <ref bean="cache"/>
+        <ref bean="plugins"/>
     </util:list>
 
-    <bean id="cache" class="org.apache.ignite.configuration.CacheConfiguration"
-          p:name="cache"
+    <bean id="cache" class="org.apache.ignite.configuration.CacheConfiguration" parent="basic"
+          p:name="cache"/>
+    <bean id="plugins" class="org.apache.ignite.configuration.CacheConfiguration" parent="basic"
+          p:name="plugins"/>
+
+    <bean id="basic" class="org.apache.ignite.configuration.CacheConfiguration" abstract="true"
           p:cacheMode="PARTITIONED"
           p:atomicityMode="TRANSACTIONAL"
           p:backups="2"/>
@@ -47,4 +60,6 @@
     </util:list>
 
     <bean id="hello" class="com.epam.training.HelloServiceImpl"/>
+
+    <bean id="context-provider" class="com.epam.training.ContextProviderImpl" autowire="byType"/>
 </beans>

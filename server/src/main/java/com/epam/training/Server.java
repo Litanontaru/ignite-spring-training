@@ -1,7 +1,6 @@
 package com.epam.training;
 
-import org.apache.ignite.Ignite;
-import org.apache.ignite.Ignition;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
@@ -9,6 +8,6 @@ import org.apache.ignite.Ignition;
  */
 public class Server {
     public static void main(String[] args) {
-        Ignition.start("ignite-cfg.xml");
+        new ClassPathXmlApplicationContext("ignite-cfg.xml");
     }
 }
