@@ -1,23 +1,11 @@
 package com.epam.training;
 
-import org.apache.ignite.Ignite;
-import org.apache.ignite.resources.IgniteInstanceResource;
-import org.apache.ignite.resources.SpringApplicationContextResource;
 import org.apache.ignite.services.ServiceContext;
-import org.springframework.context.ApplicationContext;
 
 /**
  * @author Andrei_Yakushin
  */
 public class HelloServiceImpl implements HelloService {
-    @IgniteInstanceResource
-    private transient Ignite ignite;
-
-    @SpringApplicationContextResource
-    private transient ApplicationContext applicationContext;
-
-    private transient ContextProvider contextProvider;
-
     @Override
     public void cancel(ServiceContext ctx) {
         System.out.println("HelloServiceImpl.cancel");
@@ -31,6 +19,5 @@ public class HelloServiceImpl implements HelloService {
     @Override
     public void execute(ServiceContext ctx) throws Exception {
         System.out.println("HelloServiceImpl.execute");
-        contextProvider = applicationContext.getBean(ContextProviderImpl.class);
     }
 }
